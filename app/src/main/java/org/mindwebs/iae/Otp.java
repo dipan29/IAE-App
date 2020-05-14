@@ -10,6 +10,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.Request;
@@ -27,8 +28,9 @@ public class Otp extends AppCompatActivity {
 
     String apiKey = "FQUnIaZv3Ictgt1F";
     EditText otp;
-    Button verifyOTP, resendOTP;
+    Button verifyOTP, resendOTP, changeNo;
     String TAG = "OTPLOG";
+    TextView otpDetails;
 
     private static final String SHARED_PREFS = "iaeSharedPref";
     RequestQueue QUEUE;
@@ -43,6 +45,8 @@ public class Otp extends AppCompatActivity {
         otp = (EditText) findViewById(R.id.otp);
         verifyOTP = (Button) findViewById(R.id.verifyOTP);
         resendOTP = (Button) findViewById(R.id.resendOTP);
+        changeNo = (Button) findViewById(R.id.changeNo);
+        otpDetails = (TextView) findViewById(R.id.otpText);
 
         SharedPreferences sharedPreferences = getSharedPreferences(SHARED_PREFS, Context.MODE_PRIVATE);
 
@@ -50,6 +54,11 @@ public class Otp extends AppCompatActivity {
         final String phoneNo = bundle.getString("phoneNo");
 //        final String phoneNo = sharedPreferences.getString("phone", "");
         Log.d(TAG, "SET PHONE NUMBER - " + phoneNo);
+
+        if(phoneNo != ""){
+            String message = "OTP was sent to " + phoneNo + "";
+            otpDetails.setText(message);
+        }
 
         boolean idSet = sharedPreferences.getBoolean("otpSet", false);
         Log.d(TAG, "SKIP VALUE " + idSet);
@@ -60,8 +69,22 @@ public class Otp extends AppCompatActivity {
         verifyOTP.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                QUEUE = Volley.newRequestQueue(getApplicationContext());
-                verify(URLVerify, otp.getText().toString(), phoneNo);
+                boolean err = false;
+                if (otp.getText().length() < 6) {
+                    Toast toast = Toast.makeText(getApplicationContext(), "Please Enter a Valid OTP", Toast.LENGTH_LONG);
+                    toast.show();
+                    err = true;
+                } else{
+                    QUEUE = Volley.newRequestQueue(getApplicationContext());
+                    verify(URLVerify, otp.getText().toString(), phoneNo);
+                }
+            }
+        });
+
+        changeNo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                goBack();
             }
         });
 
@@ -74,6 +97,22 @@ public class Otp extends AppCompatActivity {
                 resend(URLResend, phoneNo);
             }
         });
+    }
+
+    public void goBack(){
+        SharedPreferences sharedPreferences = getSharedPreferences(SHARED_PREFS, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+
+        editor.putBoolean("otpSet", false);
+        editor.putBoolean("idSet", false);
+        editor.commit();
+        Intent i = new Intent(Otp.this, Register.class);
+        startActivity(i);
+        finish();
+    }
+
+    public void onBackPressed() {
+        goBack();
     }
 
     public void resend(String url,

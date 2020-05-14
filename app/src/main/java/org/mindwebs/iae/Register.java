@@ -62,15 +62,34 @@ public class Register extends AppCompatActivity {
         register.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                QUEUE = Volley.newRequestQueue(getApplicationContext());
-                httpPost(URLHTTP, name.getText().toString(), email.getText().toString(), phone.getText().toString());
-                Intent i = new Intent(Register.this, Otp.class);
-//                startActivity(new Intent(Register.this, Otp.class));
-                Bundle bundle = new Bundle();
-                bundle.putString("phoneNo", phone.getText().toString());
-                i.putExtras(bundle);
-                startActivity(i);
-                finish();
+                boolean err = false;
+                if(name.getText().length() < 1){
+                    Toast toast = Toast.makeText(getApplicationContext(),"Please Enter a Valid Name",Toast.LENGTH_SHORT);
+                    toast.show();
+                    err = true;
+                } else if(email.getText().length() < 1){
+                    Toast toast = Toast.makeText(getApplicationContext(),"Please Enter an Email Address",Toast.LENGTH_SHORT);
+                    toast.show();
+                    err = true;
+                } else if(phone.getText().length() < 10){
+                    Toast toast = Toast.makeText(getApplicationContext(),"Please Enter a Valid Phone Number",Toast.LENGTH_SHORT);
+                    toast.show();
+                    err = true;
+                }
+                if(!err) {
+                    QUEUE = Volley.newRequestQueue(getApplicationContext());
+                    httpPost(URLHTTP, name.getText().toString(), email.getText().toString(), phone.getText().toString());
+                    Intent i = new Intent(Register.this, Otp.class);
+                    //                startActivity(new Intent(Register.this, Otp.class));
+                    Bundle bundle = new Bundle();
+                    bundle.putString("phoneNo", phone.getText().toString());
+                    i.putExtras(bundle);
+                    startActivity(i);
+                    finish();
+                } else {
+                    Toast toast = Toast.makeText(getApplicationContext(),"Please fill up the necessary fields",Toast.LENGTH_LONG);
+//                    toast.show();
+                }
             }
         });
 

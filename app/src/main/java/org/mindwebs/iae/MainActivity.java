@@ -38,7 +38,7 @@ public class MainActivity extends AppCompatActivity {
         btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast toast = Toast.makeText(getApplicationContext(),"Please login or register using the menu.",Toast.LENGTH_LONG);
+                Toast toast = Toast.makeText(getApplicationContext(),"Please login or register using the menu.",Toast.LENGTH_SHORT);
                 toast.show();
 //                Toast.makeText(this, "Please login or register using the menu.", Toast.LENGTH_LONG).show();
                 startActivity(new Intent(MainActivity.this, Tutor.class));
