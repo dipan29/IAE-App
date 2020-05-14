@@ -50,7 +50,11 @@ public class Register extends AppCompatActivity {
 //        SharedPreferences.Editor Editor = sharedPreferences.edit();
 
         boolean idSet = sharedPreferences.getBoolean("idSet", false);
+        boolean otpSet = sharedPreferences.getBoolean("otpSet", false);
         Log.d(TAG, "SKIP VALUE " + idSet);
+        if(otpSet){
+            startActivity(new Intent(Register.this, MainActivity.class));
+        }
         if(idSet){
             startActivity(new Intent(Register.this, Otp.class));
         }
@@ -59,9 +63,14 @@ public class Register extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 QUEUE = Volley.newRequestQueue(getApplicationContext());
-
                 httpPost(URLHTTP, name.getText().toString(), email.getText().toString(), phone.getText().toString());
-                startActivity(new Intent(Register.this, Otp.class));
+                Intent i = new Intent(Register.this, Otp.class);
+//                startActivity(new Intent(Register.this, Otp.class));
+                Bundle bundle = new Bundle();
+                bundle.putString("phoneNo", phone.getText().toString());
+                i.putExtras(bundle);
+                startActivity(i);
+                finish();
             }
         });
 

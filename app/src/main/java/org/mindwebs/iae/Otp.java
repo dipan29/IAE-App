@@ -46,7 +46,10 @@ public class Otp extends AppCompatActivity {
 
         SharedPreferences sharedPreferences = getSharedPreferences(SHARED_PREFS, Context.MODE_PRIVATE);
 
-        final String phoneNo = sharedPreferences.getString("phone", "");
+        Bundle bundle = getIntent().getExtras();
+        final String phoneNo = bundle.getString("phoneNo");
+//        final String phoneNo = sharedPreferences.getString("phone", "");
+        Log.d(TAG, "SET PHONE NUMBER - " + phoneNo);
 
         boolean idSet = sharedPreferences.getBoolean("otpSet", false);
         Log.d(TAG, "SKIP VALUE " + idSet);
@@ -120,6 +123,7 @@ public class Otp extends AppCompatActivity {
                     Toast toast = Toast.makeText(getApplicationContext(),"Your OTP was Verified",Toast.LENGTH_LONG);
                     toast.show();
                     startActivity(new Intent(Otp.this, MainActivity.class));
+                    finish();
                 } else {
                     editor.putBoolean("otpSet", false);
                     Log.d(TAG, "RESPONSE INVALIDATED");
